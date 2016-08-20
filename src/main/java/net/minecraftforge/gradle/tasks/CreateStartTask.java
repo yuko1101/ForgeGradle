@@ -33,6 +33,9 @@ import net.minecraftforge.gradle.common.Constants;
 import net.minecraftforge.gradle.util.caching.Cached;
 import net.minecraftforge.gradle.util.caching.CachedTask;
 
+import org.gradle.api.AntBuilder;
+import org.gradle.api.Task;
+import org.gradle.api.AntBuilder.AntMessagePriority;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileVisitDetails;
 import org.gradle.api.file.FileVisitor;
@@ -126,7 +129,7 @@ public class CreateStartTask extends CachedTask
                     col = col.plus(config);
             }
 
-            AntBuilder ant = this.setupAnt();
+            AntBuilder ant = CreateStartTask.setupAnt(this);
             // INVOKE!
             this.getAnt().invokeMethod("javac", ImmutableMap.builder()
                     .put("srcDir", resourceDir.getCanonicalPath())
@@ -160,10 +163,10 @@ public class CreateStartTask extends CachedTask
 
     }
 
-    private AntBuilder setupAnt()
+    public static AntBuilder setupAnt(Task task)
     {
-        AntBuilder ant = this.getAnt();
-        LogLevel startLevel = getProject().getGradle().getStartParameter().getLogLevel();
+        AntBuilder ant = task.getAnt();
+        LogLevel startLevel = task.getProject().getGradle().getStartParameter().getLogLevel();
         if (startLevel.compareTo(LogLevel.LIFECYCLE) >= 0)
         {
             GradleVersion v2_14 = GradleVersion.version("2.14");
@@ -174,10 +177,10 @@ public class CreateStartTask extends CachedTask
             else
             {
                 try {
-                    LoggingManager.class.getMethod("setLevel", LogLevel.class).invoke(getLogging(), LogLevel.ERROR);
+                    LoggingManager.class.getMethod("setLevel", LogLevel.class).invoke(task.getLogging(), LogLevel.ERROR);
                 } catch (Exception e) {
                     //Couldn't find it? We are on some weird version oh well.
-                    this.getLogger().info("Could not set log level:", e);
+                    task.getLogger().info("Could not set log level:", e);
                 }
             }
         }
