@@ -92,6 +92,10 @@ dependencies {
     compileOnly "net.minecraft:launchwrapper:1.11"
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14'
+}
+
 sourceSets {
     main.compileClasspath += configurations.shade;
     main.runtimeClasspath += configurations.shade;
