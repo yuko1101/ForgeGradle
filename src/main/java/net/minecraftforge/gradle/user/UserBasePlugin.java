@@ -119,8 +119,8 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             {
                 TaskExecutionGraph graph = project.getGradle().getTaskGraph();
                 String path = project.getPath();
-                
-                graph.getAllTasks().clear();
+
+                //graph.getAllTasks().clear();
 
                 if (graph.hasTask(path + "setupDecompWorkspace"))
                 {
@@ -354,7 +354,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
 
         project.getConfigurations().getByName("apiCompile").extendsFrom(project.getConfigurations().getByName("compile"));
         project.getConfigurations().getByName("testCompile").extendsFrom(project.getConfigurations().getByName("apiCompile"));
-        
+
         // set compile not to take from libs
         JavaCompile compileTask = ((JavaCompile)project.getTasks().getByName(main.getCompileJavaTaskName()));
         List<String> args = compileTask.getOptions().getCompilerArgs();
@@ -435,7 +435,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
                 try
                 {
                     String module = task.getProject().getProjectDir().getCanonicalPath();
-                    
+
                     File root = task.getProject().getProjectDir().getCanonicalFile();
                     File file = null;
                     while (file == null && !root.equals(task.getProject().getRootProject().getProjectDir().getCanonicalFile().getParentFile()))
@@ -454,10 +454,10 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
                                 }
                             }
                         }
-                        
+
                         root = root.getParentFile();
                     }
-                    
+
                     if (file == null || !file.exists())
                         throw new RuntimeException("Intellij workspace file could not be found! are you sure you imported the project into intellij?");
 
@@ -693,9 +693,9 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             task.addReplacement("@@BOUNCERSERVER@@", delayedString("{RUN_BOUNCE_SERVER}"));
             task.setStartOut(delayedFile(getStartDir()));
             task.compileResources(CONFIG_DEPS);
-            
+
             // see delayed task config for some more config
-            
+
             task.dependsOn("extractUserDev", "getAssets", "getAssetsIndex", "extractNatives");
         }
 
@@ -806,13 +806,18 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void createExecTasks()
     {
-        JavaExec exec = makeTask("runClient", JavaExec.class);
         {
+			final JavaExec exec = makeTask("runClient", JavaExec.class);
             exec.doFirst(new MakeDirExist(delayedFile("{RUN_DIR}")));
             exec.setMain(GRADLE_START_CLIENT);
             //exec.jvmArgs("-Xincgc", "-Xmx1024M", "-Xms1024M", "-Dfml.ignoreInvalidMinecraftCertificates=true");
             exec.args(getClientRunArgs());
-            exec.workingDir(delayedFile("{RUN_DIR}"));
+			project.afterEvaluate(new Action<Project>() {
+				@Override
+				public void execute(Project arg0) {
+					exec.workingDir(delayedFile("{RUN_DIR}"));
+				}
+			});
             exec.setStandardOutput(System.out);
             exec.setErrorOutput(System.err);
 
@@ -822,12 +827,17 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             exec.dependsOn("makeStart");
         }
 
-        exec = makeTask("runServer", JavaExec.class);
         {
+			final JavaExec exec = makeTask("runServer", JavaExec.class);
             exec.doFirst(new MakeDirExist(delayedFile("{RUN_DIR}")));
             exec.setMain(GRADLE_START_SERVER);
             exec.jvmArgs("-Xincgc", "-Dfml.ignoreInvalidMinecraftCertificates=true");
-            exec.workingDir(delayedFile("{RUN_DIR}"));
+			project.afterEvaluate(new Action<Project>() {
+				@Override
+				public void execute(Project arg0) {
+					exec.workingDir(delayedFile("{RUN_DIR}"));
+				}
+			});
             exec.args(getServerRunArgs());
             exec.setStandardOutput(System.out);
             exec.setStandardInput(System.in);
@@ -839,9 +849,14 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             exec.dependsOn("makeStart");
         }
 
-        exec = makeTask("debugClient", JavaExec.class);
         {
-            exec.doFirst(new MakeDirExist(delayedFile("{RUN_DIR}")));
+			final JavaExec exec = makeTask("debugClient", JavaExec.class);
+			project.afterEvaluate(new Action<Project>() {
+				@Override
+				public void execute(Project arg0) {
+					exec.doFirst(new MakeDirExist(delayedFile("{RUN_DIR}")));
+				}
+			});
             exec.doFirst( new Action() {
                 @Override public void execute(Object o)
                 {
@@ -858,7 +873,12 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             exec.setMain(GRADLE_START_CLIENT);
             exec.jvmArgs("-Xincgc", "-Xmx1024M", "-Xms1024M", "-Dfml.ignoreInvalidMinecraftCertificates=true");
             exec.args(getClientRunArgs());
-            exec.workingDir(delayedFile("{RUN_DIR}"));
+			project.afterEvaluate(new Action<Project>() {
+				@Override
+				public void execute(Project arg0) {
+					exec.workingDir(delayedFile("{RUN_DIR}"));
+				}
+			});
             exec.setStandardOutput(System.out);
             exec.setErrorOutput(System.err);
             exec.setDebug(true);
@@ -869,9 +889,14 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             exec.dependsOn("makeStart");
         }
 
-        exec = makeTask("debugServer", JavaExec.class);
         {
-            exec.doFirst(new MakeDirExist(delayedFile("{RUN_DIR}")));
+			final JavaExec exec = makeTask("debugServer", JavaExec.class);
+			project.afterEvaluate(new Action<Project>() {
+				@Override
+				public void execute(Project arg0) {
+					exec.doFirst(new MakeDirExist(delayedFile("{RUN_DIR}")));
+				}
+			});
             exec.doFirst( new Action() {
                 @Override public void execute(Object o)
                 {
@@ -887,7 +912,12 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             });
             exec.setMain(GRADLE_START_SERVER);
             exec.jvmArgs("-Xincgc", "-Dfml.ignoreInvalidMinecraftCertificates=true");
-            exec.workingDir(delayedFile("{RUN_DIR}"));
+			project.afterEvaluate(new Action<Project>() {
+				@Override
+				public void execute(Project arg0) {
+					exec.workingDir(delayedFile("{RUN_DIR}"));
+				}
+			});
             exec.args(getServerRunArgs());
             exec.setStandardOutput(System.out);
             exec.setStandardInput(System.in);
@@ -1064,11 +1094,11 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             repackageTask.setArchiveName(out.getName());
             repackageTask.setDestinationDir(out.getParentFile());
         }
-        
+
         {
             // because different versions of authlib
             CreateStartTask task = (CreateStartTask) project.getTasks().getByName("makeStart");
-            
+
             if (getMcVersion(getExtension()).startsWith("1.7")) // MC 1.7.X
             {
                 if (getMcVersion(getExtension()).endsWith("10")) // MC 1.7.10
@@ -1156,7 +1186,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         }
 
         setMinecraftDeps(decomp, remove);
-        
+
         if (decomp && remove)
         {
             (project.getTasks().getByName("deobfBinJar")).onlyIf(Constants.CALL_FALSE);
