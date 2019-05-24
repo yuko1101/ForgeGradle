@@ -58,7 +58,7 @@ public class SubprojectTask extends DefaultTask
         if (!task.getState().getExecuted())
         {
             getLogger().lifecycle(task.getPath());
-            task.execute();
+            throw new UnsupportedOperationException("dev part of FG1.2 is broken, see git blame of this line for what to fix");
         }
     }
 

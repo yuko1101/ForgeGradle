@@ -25,7 +25,6 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.PublishArtifact;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.DefaultDomainObjectSet;
-import org.gradle.api.internal.file.collections.SimpleFileCollection;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
@@ -361,7 +360,7 @@ public class ReobfTask extends DefaultTask
                 collect.add(obf.getToObf());
         }
 
-        return new SimpleFileCollection(collect.toArray(new File[collect.size()]));
+        return getProject().files(collect);
     }
 
     /**
@@ -377,7 +376,7 @@ public class ReobfTask extends DefaultTask
                 collect.add(obf.getFile());
         }
 
-        return new SimpleFileCollection(collect.toArray(new File[collect.size()]));
+        return getProject().files(collect);
     }
 
     @SuppressWarnings({ "serial" })

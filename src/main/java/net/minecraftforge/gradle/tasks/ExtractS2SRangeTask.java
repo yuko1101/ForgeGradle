@@ -339,7 +339,7 @@ public class ExtractS2SRangeTask extends DefaultTask
         if (!task.getState().getExecuted())
         {
             getLogger().lifecycle(task.getPath());
-            task.execute();
+            throw new UnsupportedOperationException("lib dependencies of this task are broken because FG1.2 doesn't know what task dependencies are. see git blame for what there's to fix");
         }
     }
 

@@ -739,12 +739,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             @Override
             public boolean isSatisfiedBy(Object obj)
             {
-                boolean didWork = ((Task) obj).dependsOnTaskDidWork();
-                boolean exists = recomp.call().exists();
-                if (!exists)
-                    return true;
-                else
-                    return didWork;
+                return !recomp.call().exists();
             }
         };
 
@@ -1162,7 +1157,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
             @Override
             public void execute(Object arg0)
             {
-                ((ScalaCompile) arg0).getScalaCompileOptions().setUseAnt(false);
+                throw new UnsupportedOperationException("This fork doesn't support scala. This git blame of this line for what needs fixing.");
             }
         });
     }
