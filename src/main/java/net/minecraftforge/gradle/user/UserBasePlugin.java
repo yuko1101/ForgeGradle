@@ -355,6 +355,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         project.getConfigurations().getByName("apiCompile").extendsFrom(project.getConfigurations().getByName("compile"));
         project.getConfigurations().getByName("testCompile").extendsFrom(project.getConfigurations().getByName("apiCompile"));
 
+        /* no idea what the point of this is but it's broken
         // set compile not to take from libs
         JavaCompile compileTask = ((JavaCompile)project.getTasks().getByName(main.getCompileJavaTaskName()));
         List<String> args = compileTask.getOptions().getCompilerArgs();
@@ -365,6 +366,7 @@ public abstract class UserBasePlugin<T extends UserExtension> extends BasePlugin
         args.add("-sourcepath");
         args.add(".");
         compileTask.getOptions().setCompilerArgs(args);
+         */
     }
 
     private void readAndApplyJson(File file, String depConfig, String nativeConfig, Logger log)
