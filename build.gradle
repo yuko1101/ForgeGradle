@@ -93,8 +93,8 @@ dependencies {
     compileOnly "net.minecraft:launchwrapper:1.11"
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.14'
+wrapper {
+    gradleVersion = '5.4.1'
 }
 
 sourceSets {
