@@ -93,7 +93,7 @@ dependencies {
     shade('de.oceanlabs.mcp:mcinjector:3.4-SNAPSHOT'){
         exclude group: 'org.ow2.asm'
     }
-    shade('net.minecraftforge.srg2source:Srg2Source:4.0-SNAPSHOT'){
+    compile('net.minecraftforge.srg2source:Srg2Source:4.0-SNAPSHOT'){
         exclude group: 'org.ow2.asm'
         exclude group: 'org.eclipse.equinox', module: 'org.eclipse.equinox.common'
     }
