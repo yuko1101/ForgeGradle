@@ -1,7 +1,13 @@
-apply plugin: 'java'
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-apply plugin: 'maven'
 
 group = 'net.teamfruit.forgegradle'
 
@@ -50,12 +56,11 @@ jar {
 }
 
 configurations {
-    deployerJars
     compileOnly
 }
 
 dependencies {
-    compile gradleApi()
+    shadow gradleApi()
 
     // moved to the beginning to be the overrider
     compile 'org.ow2.asm:asm-debug-all:5.0.3'
@@ -81,9 +86,6 @@ dependencies {
     compile 'de.oceanlabs.mcp:RetroGuard:3.6.6'
     compile 'de.oceanlabs.mcp:mcinjector:3.2-SNAPSHOT'
     compile 'net.minecraftforge.srg2source:Srg2Source:3.2-SNAPSHOT'
-
-    // stupid maven
-    deployerJars "org.apache.maven.wagon:wagon-ssh:2.2"
 
     //Stuff used in the GradleStart classes
     compileOnly 'com.mojang:authlib:1.5.16'
@@ -125,80 +127,16 @@ test {
     }
 }
 
-uploadArchives {
-    repositories {
-        if (project.hasProperty("forgeMavenPass")) {
-            logger.info('Publishing to files server')
+task relocateShadowJar(type: ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+    prefix = "fg_1_2"
+}
+tasks.shadowJar.dependsOn tasks.relocateShadowJar
 
-            mavenDeployer {
-                configuration = configurations.deployerJars
-
-				repository(url: "https://api.bintray.com" + '/maven/' + "team-fruit" + '/' + "mods" + '/' + "ForgeGradle" + ";publish=1") {
-					authentication(userName: project.getProperty('forgeMavenUser'), password: project.getProperty('forgeMavenPass'))
-				}
-
-                pom {
-                    groupId = project.group
-                    version = project.version
-                    artifactId = project.archivesBaseName
-                    project {
-                        name project.archivesBaseName
-                        packaging 'jar'
-                        description 'Gradle plugin for Forge (Forked)'
-                        url 'https://github.com/Team-Fruit/ForgeGradle'
-
-                        scm {
-                            url 'https://github.com/Team-Fruit/ForgeGradle'
-                            connection 'scm:git:git://github.com/Team-Fruit/ForgeGradle.git'
-                            developerConnection 'scm:git:git@github.com:Team-Fruit/ForgeGradle.git'
-                        }
-
-                        issueManagement {
-                            system 'github'
-                            url 'https://github.com/Team-Fruit/ForgeGradle/issues'
-                        }
-
-                        licenses {
-                            license {
-                                name 'Eclipse Public License (EPL), Version 1.0'
-                                url 'http://www.eclipse.org/legal/epl-v10.html'
-                                distribution 'repo'
-                            }
-                        }
-
-                        developers {
-                            developer {
-                                id 'AbrarSyed'
-                                name 'Abrar Syed'
-                                roles { role 'developer' }
-                            }
-                        }
-                        developers {
-                            developer {
-                                id 'LexManos'
-                                name 'Lex Manos'
-                                roles { role 'developer' }
-                            }
-                        }
-                        developers {
-                            developer {
-                                id 'Kamesuta'
-                                name 'Kamesuta'
-                                roles { role 'developer' }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            add project.repositories.mavenLocal()
-            logger.info('Publishing to repo folder')
-
-            mavenDeployer {
-                repository(url: 'file://localhost/' + project.file('repo').getAbsolutePath())
-            }
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
         }
     }
 }
