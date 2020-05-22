@@ -54,6 +54,8 @@ repositories {
         name = "mojang"
         url = "https://libraries.minecraft.net/"
     }
+
+    maven { url = "https://jitpack.io" } // updated MCInjector
 }
 
 configurations {
@@ -92,7 +94,7 @@ dependencies {
 
     // mcp stuff
     compile 'de.oceanlabs.mcp:RetroGuard:3.6.6'
-    compile('de.oceanlabs.mcp:mcinjector:3.4-SNAPSHOT'){
+    compile('com.github.ModCoderPack:MCInjector:c36f39f'){
         exclude group: 'org.ow2.asm'
     }
     compile('net.minecraftforge.srg2source:Srg2Source:4.0-SNAPSHOT'){
