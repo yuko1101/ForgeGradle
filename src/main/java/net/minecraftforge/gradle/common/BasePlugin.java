@@ -167,7 +167,12 @@ public abstract class BasePlugin<K extends BaseExtension> implements Plugin<Proj
         project.allprojects(new Action<Project>() {
             public void execute(Project proj)
             {
-                addMavenRepo(proj, "forge", URL_FORGE_MAVEN);
+                MavenArtifactRepository forge = addMavenRepo(proj, "forge", URL_FORGE_MAVEN);
+                // mcp data does not include pom (and artifact() is no longer default as of Gradle 6.0)
+                forge.metadataSources(it -> {
+                    it.mavenPom();
+                    it.artifact();
+                });
                 proj.getRepositories().mavenCentral();
                 addMavenRepo(proj, "minecraft", URL_LIBRARY);
             }
