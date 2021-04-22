@@ -34,7 +34,7 @@ repositories {
     mavenLocal()
     maven {
         name = "forge"
-        url = "http://files.minecraftforge.net/maven"
+        url = "https://maven.minecraftforge.net"
     }
     maven {
         // because Srg2Source needs an eclipse dependency.
@@ -99,6 +99,12 @@ dependencies {
     //Stuff used in the GradleStart classes
     compileOnly 'com.mojang:authlib:1.5.16'
     compileOnly "net.minecraft:launchwrapper:1.11"
+
+    constraints {
+        compile('org.eclipse.jdt:org.eclipse.jdt.core:3.10.0') {
+            because 'Srg2Source depends on a snapshot version which the forge maven has stopped serving'
+        }
+    }
 }
 
 wrapper {
