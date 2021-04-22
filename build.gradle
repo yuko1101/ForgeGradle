@@ -32,7 +32,7 @@ repositories {
     mavenLocal()
     maven {
         name = "forge"
-        url = "https://files.minecraftforge.net/maven"
+        url = "https://maven.minecraftforge.net"
     }
     maven {
         // because Srg2Source needs an eclipse dependency.
@@ -110,6 +110,12 @@ dependencies {
 
     compileOnly "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.3-2"
     testCompile 'junit:junit:4.12'
+
+    constraints {
+        compile('org.eclipse.jdt:org.eclipse.jdt.core:3.12.3') {
+            because 'Srg2Source depends on a snapshot version which the forge maven has stopped serving'
+        }
+    }
 }
 
 wrapper {
