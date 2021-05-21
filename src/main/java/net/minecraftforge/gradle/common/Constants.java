@@ -53,7 +53,10 @@ public class Constants
     public static final String MC_JSON_URL      = "http://s3.amazonaws.com/Minecraft.Download/versions/{MC_VERSION}/{MC_VERSION}.json";
     public static final String MC_JAR_URL       = "http://s3.amazonaws.com/Minecraft.Download/versions/{MC_VERSION}/{MC_VERSION}.jar";
     public static final String MC_SERVER_URL    = "http://s3.amazonaws.com/Minecraft.Download/versions/{MC_VERSION}/minecraft_server.{MC_VERSION}.jar";
-    public static final String MCP_URL          = "http://files.minecraftforge.net/fernflower-fix-1.0.zip";
+    // Note: You can open the Link that was here originally, and it would work. The Gradle-Log throws an error though. 503, Redirected. Then it shows that it was permanently redirected to maven.minecraftforge.net.
+    // your browser somehow downloads the file, but entering the redirected link directly, you will be prompted to log into the minecraft forge maven server. Doesn't look like there is a way around it, so I uploaded the File to my server
+    // and now it works. File should stay for at least 2 Years, but probably for ever, so there shouldn't be a problem with my host. You can change it if needed.
+    public static final String MCP_URL          = "https://mgnet.work/repo/fg1.2-fernflower-fix-1.0.zip";
     public static final String ASSETS_URL       = "http://resources.download.minecraft.net";
     public static final String LIBRARY_URL      = "https://libraries.minecraft.net/";
     public static final String FORGE_MAVEN      = "https://maven.minecraftforge.net";
