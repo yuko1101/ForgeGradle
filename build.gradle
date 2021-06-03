@@ -14,7 +14,7 @@ buildscript {
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 apply plugin: 'idea'
@@ -59,11 +59,18 @@ repositories {
 }
 
 configurations {
+    // compile has been replaced with api, re-adding to keep the diff small
+    compile
+    api.extendsFrom(compile)
+    testCompile
+    testImplementation.extendsFrom(testCompile)
+
     deployerJars
 }
 
 dependencies {
     shadow gradleApi()
+    testImplementation gradleApi()
 
     compile 'org.ow2.asm:asm:6.0'
     compile 'org.ow2.asm:asm-tree:6.0'
@@ -119,7 +126,7 @@ dependencies {
 }
 
 wrapper {
-    gradleVersion = '5.4.1'
+    gradleVersion = '7.0.2'
 }
 
 compileJava {
@@ -129,12 +136,8 @@ compileJava {
 }
 
 processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        include 'forgegradle.version.txt'
+    filesMatching(["forgegradle.version.txt"]) {
         expand 'version': project.version
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'forgegradle.version.txt'
     }
 }
 
