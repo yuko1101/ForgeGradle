@@ -34,10 +34,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.bind.DatatypeConverter;
-
 import net.minecraftforge.gradle.common.Constants;
 
+import org.apache.commons.codec.binary.Base64;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
@@ -71,7 +70,7 @@ public class JenkinsChangelog extends DefaultTask
         if (getAuthName() != null && getAuthPassword() != null)
         {
             String raw = getAuthName() + ":" + getAuthPassword();
-            auth = "Basic " + DatatypeConverter.printBase64Binary(raw.getBytes());
+            auth = "Basic " + Base64.encodeBase64String(raw.getBytes());
         }
 
         List<Map<String, Object>> builds = getBuildInfo();
