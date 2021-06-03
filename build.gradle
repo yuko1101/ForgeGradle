@@ -21,7 +21,7 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: "com.gradle.plugin-publish"
 
-group = 'net.minecraftforge.gradle'
+group = 'com.github.ReplayMod'
 version = '2.3-SNAPSHOT'
 //version = '2.2.1'
 archivesBaseName = 'ForgeGradle'
