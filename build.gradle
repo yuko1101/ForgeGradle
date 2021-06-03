@@ -23,8 +23,8 @@ apply plugin: 'eclipse'
 apply plugin: "com.gradle.plugin-publish"
 apply plugin: 'license'
 
-group = 'local.github.ReplayMod'
-version = 'ab81684e'
+group = 'com.github.ReplayMod'
+version = '2.1-SNAPSHOT'
 //version = '2.2.1'
 archivesBaseName = 'ForgeGradle'
 targetCompatibility = '1.8'
