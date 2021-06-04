@@ -23,6 +23,7 @@ import static net.minecraftforge.gradle.common.Constants.DIR_JSONS;
 import static net.minecraftforge.gradle.common.Constants.JAR_MERGED;
 import static net.minecraftforge.gradle.common.Constants.MCP_INJECT;
 import static net.minecraftforge.gradle.common.Constants.MCP_PATCHES_MERGED;
+import static net.minecraftforge.gradle.common.Constants.REPLACE_ASSET_INDEX;
 import static net.minecraftforge.gradle.common.Constants.TASK_DL_VERSION_JSON;
 import static net.minecraftforge.gradle.common.Constants.TASK_GENERATE_SRGS;
 import static net.minecraftforge.gradle.common.Constants.TASK_MERGE_JARS;
@@ -170,6 +171,8 @@ public abstract class PatcherUserBasePlugin<T extends UserBaseExtension> extends
             if (jsonFile.exists())
             {
                 parseAndStoreVersion(jsonFile, delayedFile(DIR_JSONS).call());
+            } else {
+                replacer.putReplacement(REPLACE_ASSET_INDEX, getApiGroup(ext) + "." + getApiName(ext) + "." + getApiVersion(ext));
             }
         }
 
