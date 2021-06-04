@@ -25,8 +25,8 @@ group = 'com.github.ReplayMod'
 version = '2.2-SNAPSHOT'
 //version = '2.2.1'
 archivesBaseName = 'ForgeGradle'
-targetCompatibility = '1.8'
-sourceCompatibility = '1.8'
+targetCompatibility = '16'
+sourceCompatibility = '16'
 
 repositories {
     mavenLocal()
