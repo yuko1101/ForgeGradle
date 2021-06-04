@@ -56,6 +56,21 @@ repositories {
     }
 }
 
+// The Side and SideOnly classes are injected into MC, so they must be compiled to Java 8 so Forge does not blow up.
+sourceSets {
+    side
+}
+tasks.named(sourceSets.side.compileJavaTaskName, JavaCompile.class).configure {
+    sourceCompatibility '1.8'
+    targetCompatibility '1.8'
+}
+jar {
+    from(sourceSets.side.output)
+}
+shadowJar {
+    from(sourceSets.side.output)
+}
+
 configurations {
     // compile has been replaced with api, re-adding to keep the diff small
     compile
@@ -69,6 +84,8 @@ configurations {
 dependencies {
     shadow gradleApi()
     testImplementation gradleApi()
+
+    shadow sourceSets.side.output
 
     // moved to the beginning to be the overrider
     compile 'org.ow2.asm:asm-debug-all:5.1'
