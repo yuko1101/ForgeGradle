@@ -35,11 +35,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
-import java.util.jar.Pack200;
-import java.util.jar.Pack200.Packer;
 
 import lzma.streams.LzmaOutputStream;
 
+import net.minecraftforge.gradle.util.pack200.Pack200;
+import net.minecraftforge.gradle.util.pack200.Pack200.Packer;
 import net.minecraftforge.gradle.util.patching.BinPatches;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.FileCollection;

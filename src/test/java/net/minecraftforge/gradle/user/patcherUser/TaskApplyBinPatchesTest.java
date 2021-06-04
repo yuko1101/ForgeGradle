@@ -23,6 +23,7 @@ import com.google.common.io.ByteStreams;
 import com.nothome.delta.Delta;
 import lzma.streams.LzmaOutputStream;
 import net.minecraftforge.gradle.testsupport.TaskTest;
+import net.minecraftforge.gradle.util.pack200.Pack200;
 import net.minecraftforge.gradle.util.patching.BinPatches;
 import org.junit.Assert;
 import org.junit.Test;
