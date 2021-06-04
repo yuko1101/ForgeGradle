@@ -44,6 +44,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.XmlProvider;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.ExternalModuleDependency;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
@@ -513,20 +514,34 @@ public abstract class UserBasePlugin<T extends UserBaseExtension> extends BasePl
                 .plus(project.getConfigurations().getByName(CONFIG_MC))
                 .plus(project.getConfigurations().getByName(CONFIG_MC_DEPS)));
 
-        project.getConfigurations().getByName(JavaPlugin.API_CONFIGURATION_NAME).extendsFrom(project.getConfigurations().getByName(CONFIG_DC_RESOLVED));
-        project.getConfigurations().getByName(CONFIG_PROVIDED).extendsFrom(project.getConfigurations().getByName(CONFIG_DP_RESOLVED));
-        project.getConfigurations().getByName(api.getApiConfigurationName()).extendsFrom(project.getConfigurations().getByName(JavaPlugin.API_CONFIGURATION_NAME));
-        project.getConfigurations().getByName(JavaPlugin.TEST_IMPLEMENTATION_CONFIGURATION_NAME).extendsFrom(project.getConfigurations().getByName(api.getApiConfigurationName()));
+        ConfigurationContainer cfgs = project.getConfigurations();
+        extendsFrom(cfgs.findByName(JavaPlugin.API_CONFIGURATION_NAME), cfgs.findByName(CONFIG_DC_RESOLVED));
+        extendsFrom(cfgs.findByName(JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME), cfgs.findByName(CONFIG_DC_RESOLVED));
+        extendsFrom(cfgs.findByName(CONFIG_PROVIDED), cfgs.findByName(CONFIG_DP_RESOLVED));
+        extendsFrom(cfgs.findByName(api.getApiConfigurationName()), cfgs.findByName(JavaPlugin.API_CONFIGURATION_NAME));
+        extendsFrom(cfgs.findByName(api.getImplementationConfigurationName()), cfgs.findByName(JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME));
+        extendsFrom(cfgs.findByName(JavaPlugin.TEST_IMPLEMENTATION_CONFIGURATION_NAME), cfgs.findByName(api.getApiConfigurationName()));
+        extendsFrom(cfgs.findByName(JavaPlugin.TEST_IMPLEMENTATION_CONFIGURATION_NAME), cfgs.findByName(api.getImplementationConfigurationName()));
 
         Javadoc javadoc = (Javadoc) project.getTasks().getByName(JavaPlugin.JAVADOC_TASK_NAME);
         javadoc.setClasspath(main.getOutput().plus(main.getCompileClasspath()));
 
         // libs folder dependencies
-        project.getDependencies().add(JavaPlugin.API_CONFIGURATION_NAME, project.fileTree("libs"));
+        if (cfgs.findByName(JavaPlugin.API_CONFIGURATION_NAME) != null) {
+            project.getDependencies().add(JavaPlugin.API_CONFIGURATION_NAME, project.fileTree("libs"));
+        } else {
+            project.getDependencies().add(JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME, project.fileTree("libs"));
+        }
 
         // set the compile target
         javaConv.setSourceCompatibility("1.6");
         javaConv.setTargetCompatibility("1.6");
+    }
+
+    private void extendsFrom(Configuration configuration, Configuration base) {
+        if (configuration != null && base != null) {
+            configuration.extendsFrom(base);
+        }
     }
 
     /**
@@ -608,8 +623,10 @@ public abstract class UserBasePlugin<T extends UserBaseExtension> extends BasePl
 
     protected final void doDevTimeDeobf()
     {
-        final Task compileDummy = getDummyDep("api", delayedFile(DIR_DEOBF_DEPS + "/compileDummy.jar"), TASK_DD_COMPILE);
-        final Task providedDummy = getDummyDep("api", delayedFile(DIR_DEOBF_DEPS + "/providedDummy.jar"), TASK_DD_PROVIDED);
+        Configuration config = project.getConfigurations().findByName(JavaPlugin.API_CONFIGURATION_NAME);
+        String configName = config != null ? config.getName() : JavaPlugin.IMPLEMENTATION_CONFIGURATION_NAME;
+        final Task compileDummy = getDummyDep(configName, delayedFile(DIR_DEOBF_DEPS + "/compileDummy.jar"), TASK_DD_COMPILE);
+        final Task providedDummy = getDummyDep(configName, delayedFile(DIR_DEOBF_DEPS + "/providedDummy.jar"), TASK_DD_PROVIDED);
 
         setupDevTimeDeobf(compileDummy, providedDummy);
     }
