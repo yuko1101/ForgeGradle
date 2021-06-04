@@ -1,0 +1,8 @@
+ForgeGradle relies on pack200 for its binary patches.
+The pack200 classes in Java were deprecated for removal in Java 11 and removed in Java 14, so for ForgeGradle to
+continue working in Java 16, we cannot rely on the JVM to provide pack200.
+Instead, we re-package OpenJDK 11's implementation (https://github.com/openjdk/jdk/tree/jdk-11%2B28) in this package.
+We do not build the native unpacker, so it will always fall back to the Java one.
+
+OpenJDK 11 is licensed under the GPLv2, so we can combine it with FG source which is licensed under LGPLv2.1, yielding
+a combined jar licensed under GPLv2.
