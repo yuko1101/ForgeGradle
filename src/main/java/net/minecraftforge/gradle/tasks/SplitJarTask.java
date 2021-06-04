@@ -47,7 +47,6 @@ public class SplitJarTask extends CachedTask implements PatternFilterable
     @InputFile
     private Object     inJar;
 
-    @Input
     private PatternSet pattern = new PatternSet();
 
     @Cached
@@ -171,12 +170,14 @@ public class SplitJarTask extends CachedTask implements PatternFilterable
         return pattern.exclude(arg0);
     }
 
+    @Input
     @Override
     public Set<String> getExcludes()
     {
         return pattern.getExcludes();
     }
 
+    @Input
     @Override
     public Set<String> getIncludes()
     {
