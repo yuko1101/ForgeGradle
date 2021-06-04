@@ -213,6 +213,10 @@ public class CreateStartTask extends CachedTask
         }
     }
 
+    public HashMap<String, String> getResources() {
+        return resources;
+    }
+
     /**
      * Use Resources.getResource() for this
      * @param resource URL of the resource in the jar
@@ -238,9 +242,17 @@ public class CreateStartTask extends CachedTask
         this.addResource(thing, thing);
     }
 
+    public HashMap<String, Object> getReplacements() {
+        return replacements;
+    }
+
     public void addReplacement(String token, Object replacement)
     {
         replacements.put(token, replacement);
+    }
+
+    public List<String> getExtraLines() {
+        return extraLines;
     }
 
     public void addExtraLine(String extra)
