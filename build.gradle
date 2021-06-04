@@ -58,6 +58,21 @@ repositories {
     maven { url = "https://jitpack.io" } // updated MCInjector
 }
 
+// The Side and SideOnly classes are injected into MC, so they must be compiled to Java 8 so Forge does not blow up.
+sourceSets {
+    side
+}
+tasks.named(sourceSets.side.compileJavaTaskName, JavaCompile.class).configure {
+    sourceCompatibility '1.8'
+    targetCompatibility '1.8'
+}
+jar {
+    from(sourceSets.side.output)
+}
+shadowJar {
+    from(sourceSets.side.output)
+}
+
 configurations {
     // compile has been replaced with api, re-adding to keep the diff small
     compile
@@ -71,6 +86,8 @@ configurations {
 dependencies {
     shadow gradleApi()
     testImplementation gradleApi()
+
+    shadow sourceSets.side.output
 
     compile 'org.ow2.asm:asm:6.0'
     compile 'org.ow2.asm:asm-tree:6.0'
